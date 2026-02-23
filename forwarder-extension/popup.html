@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 350px;
+      padding: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      padding: 20px;
+      color: #333;
+    }
+    
+    h1 {
+      margin: 0 0 20px 0;
+      font-size: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ccc;
+      display: inline-block;
+    }
+    
+    .status-indicator.connected {
+      background: #4caf50;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-indicator.disconnected {
+      background: #f44336;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 26px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #667eea;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+    
+    button {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .status-text {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 5px;
+      text-align: center;
+    }
+    
+    .instructions {
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+      padding: 10px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 5px;
+    }
+    
+    .instructions strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #856404;
+    }
+    
+    .test-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .notification-history {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .history-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .clear-btn {
+      padding: 5px 10px;
+      font-size: 12px;
+      background: #dc3545;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    .notification-list {
+      max-height: 300px;
+      overflow-y: auto;
+      background: #f8f9fa;
+      border-radius: 5px;
+      padding: 10px;
+    }
+    
+    .notification-item {
+      background: white;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .notification-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .notification-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .notification-message {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    
+    .notification-meta {
+      font-size: 11px;
+      color: #999;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .notification-status {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .status-captured {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-forwarded {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-failed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+      font-style: italic;
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 10px 0;
+      padding: 10px;
+      background: #e9ecef;
+      border-radius: 5px;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>
+      <span class="status-indicator" id="statusIndicator"></span>
+      Notification Forwarder
+    </h1>
+    
+    <div class="form-group">
+      <label for="serverUrl">WebSocket Server URL (ngrok):</label>
+      <input type="text" id="serverUrl" placeholder="wss://xxxxx.ngrok.io">
+    </div>
+    
+    <div class="form-group">
+      <label for="authToken">Auth Token:</label>
+      <input type="password" id="authToken" placeholder="Enter authentication token">
+    </div>
+    
+    <div class="toggle-container">
+      <label for="enabled" style="margin: 0;">Enable Forwarding</label>
+      <div class="toggle-switch">
+        <input type="checkbox" id="enabled">
+        <span class="slider"></span>
+      </div>
+    </div>
+    
+    <button id="saveBtn">Save Configuration</button>
+    
+    <div id="statusText" class="status-text">
+      Checking connection status...
+    </div>
+    
+    <div class="test-section">
+      <button id="testBtn">Send Test Notification</button>
+    </div>
+    
+    <div class="notification-history">
+      <div class="history-header">
+        <span class="history-title">Captured Notifications</span>
+        <button class="clear-btn" id="clearHistoryBtn">Clear</button>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="capturedCount">0</div>
+          <div class="stat-label">Captured</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="forwardedCount">0</div>
+          <div class="stat-label">Forwarded</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="failedCount">0</div>
+          <div class="stat-label">Failed</div>
+        </div>
+      </div>
+      
+      <div class="notification-list" id="notificationList">
+        <div class="empty-state">No notifications captured yet</div>
+      </div>
+    </div>
+    
+    <div class="instructions">
+      <strong>Setup Instructions:</strong>
+      1. Run ngrok: <code>ngrok http 8080</code><br>
+      2. Copy the WSS URL (e.g., wss://xxxxx.ngrok.io)<br>
+      3. Enter the URL and auth token above<br>
+      4. Enable forwarding to start syncing
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
